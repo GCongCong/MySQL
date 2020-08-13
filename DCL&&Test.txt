@@ -1,0 +1,52 @@
+grant all on *.* to "u1"; # 将所有库下的所有表的所有权限赋予给u1
+grant select on Review.* to "CC";
+
+select id,AVG(score) avg_score
+from result
+group by id
+having AVG(score)>60;
+
+select*
+from stu
+where id in
+(select a.id
+from result a,result b
+where a.id=b.id and
+	  a.pid="p01" and
+	  b.pid="p02" and
+	  a.score>b.score
+);
+select*
+from stu 
+(select a.id 
+from 
+(select id,score from result where pid="p01")a
+inner join
+(select id,score from result where pid="p02")b
+on a.id=b.id and a.score>b.score );
+
+select *
+from stu
+where id in
+(
+select a.id 
+from 
+(select id,score from result where pid="p01")a
+inner join
+(select id,score from result where pid="p02")b
+on a.id=b.id and a.score>b.score
+);
+
+select *
+from 
+stu s1
+inner join
+(
+select a.id 
+from 
+(select id,score from result where pid="p01")a
+inner join
+(select id,score from result where pid="p02")b
+on a.id=b.id and a.score>b.score
+) t1
+on s1.id=t1.id;
