@@ -1,0 +1,90 @@
+2. DML语句
+insert into stu values("001","zhangsan","man",20);
+insert into stu(id,name,sex) values("002","lisi","woman");
+insert into stu values("003","wangwu","man",22),
+					  ("004","zhaoliu","man",21),
+					  ("005","cc","woman",21);
+delete from stu;
+delete from stu where id="006";
+update stu set age=0;
+update stu set age=0 where id="002";
+select* from stu;
+select id,name,sex,age from stu;
+
+select* from stu where id="001";
+
+select distinct age from stu;
+
+select distinct age from stu order by age;
+select distinct age from stu order by age desc;
+select id,sum(score) from result group by id;
+create table  result
+(
+	id varchar(15) comment "学生编号",
+	pid varchar(15) comment "课程编号",
+	score float comment "成绩"
+);
+insert into result values("001","p01",78),
+						 ("001","p02",56),
+						 ("002","p01",34),
+						 ("002","p02",89),
+						 ("003","p02",57);
+select stu.id,score
+from stu,result
+where stu.id = result.id and
+      age <20 and
+	  score < 60;
+//左连接
+select a.id,score
+from 
+(select id,age from stu where age < 20) a #将查询结果命名为表a
+left join
+(select id,score from result where score < 60) b #将查询结果命名为表b
+on a.id = b.id;#连接后的筛选条件
+//右连接
+select a.id,score
+from 
+(select id,age from stu where age < 20) a #将查询结果命名为表a
+right join
+(select id,score from result where score < 60) b #将查询结果命名为表b
+on a.id = b.id;#连接后的筛选条件
+//全连接
+select a.id,score
+from 
+(select id,age from stu where age < 20) as a #将查询结果命名为表a
+union all
+(select id,score from result where score < 60) as b #将查询结果命名为表b
+on a.id = b.id; #连接后的筛选条件
+//聚合左连接，右连接实现全连接
+(select a.id,score
+from 
+(select id,age from stu where age < 20) a 
+left join
+(select id,score from result where score < 60) b 
+on a.id = b.id)
+union
+(select a.id,score
+from 
+(select id,age from stu where age < 20) a 
+right join
+(select id,score from result where score < 60) b 
+on a.id = b.id);
+//内连接
+select a.id,score
+from 
+(select id,age from stu where age < 20) a #将查询结果命名为表a
+inner join 
+(select id,score from result where score < 60) b #将查询结果命名为表b
+on a.id = b.id;#连接后的筛选条件
+//教师表
+create table teach
+(
+	tid varchar(15) NOT NULL primary key comment "教师编号",
+	name varchar(20) NOT NULL comment "教师姓名",
+	sex  enum("man","woman") default NULL comment "教师性别",
+	age int(11) default 18 comment "教师年龄"
+);
+insert into teach values("t01","yang","man",18),
+						("t02","su","man",17),
+						("t03","he","man",17);
+select* from stu union select* from teach;
