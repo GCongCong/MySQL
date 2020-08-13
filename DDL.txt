@@ -1,0 +1,14 @@
+1. DDL语句
+su //切换到root用户
+service mysqld start //打开数据库服务器
+mysql -u root -p //没有设定密码，一直回车即可
+show databases;//查看所有数据库
+create database Review;
+show create database Review;
+create table stu
+(
+	sid  varchar(10) primary key COMMENT "学生学号", 
+	name varchar(20) not null COMMENT "学生姓名",    
+	sex  enum("man","woman") COMMENT "学生性别",     
+	age  int default 18 COMMENT "学生年龄"        
+);
